@@ -36,6 +36,7 @@ class HKCAlarmControlPanel(AlarmControlPanelEntity, CoordinatorEntity):
         self._hkc_alarm = data.get('hkc_alarm')
         self._scan_interval = data.get('scan_interval')
         self._device_info = device_info
+        self._state = None
         self._panel_data = None
 
     @property
@@ -72,6 +73,10 @@ class HKCAlarmControlPanel(AlarmControlPanelEntity, CoordinatorEntity):
         }
 
     @property
+    def state(self):
+        return self._state
+
+    @property
     def name(self):
         return "HKC Alarm System"
 
@@ -104,15 +109,15 @@ class HKCAlarmControlPanel(AlarmControlPanelEntity, CoordinatorEntity):
         blocks = status.get("blocks", [])
 
         if any(block["inAlarm"] for block in blocks):
-            self._attr_state = "triggered"
+            self._state = "triggered"
         elif any(block["armState"] == 3 for block in blocks):
-            self._attr_state = "armed_away"
+            self._state = "armed_away"
         elif any(block["armState"] == 2 for block in blocks):
-            self._attr_state = "armed_night"
+            self._state = "armed_night"
         elif any(block["armState"] == 1 for block in blocks):
-            self._attr_state = "armed_home"
+            self._state = "armed_home"
         else:
-            self._attr_state = "disarmed"
+            self._state = "disarmed"
 
         self.async_write_ha_state()  # Update the state with the latest data
 
