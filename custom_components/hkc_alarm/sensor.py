@@ -3,10 +3,10 @@ import pytz
 from homeassistant.core import callback
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from .const import DOMAIN
 from datetime import datetime, timedelta
 from homeassistant.helpers.service import async_register_admin_service
 import voluptuous as vol
-from .const import DOMAIN
 
 _logger = logging.getLogger(__name__)
 
@@ -128,6 +128,7 @@ class HKCSensor(CoordinatorEntity, SensorEntity):
             )
 
         self.async_write_ha_state()  # Update the state with the latest data
+
 
 async def async_setup_entry(hass, entry, async_add_entities):
     hkc_alarm = hass.data[DOMAIN][entry.entry_id]["hkc_alarm"]

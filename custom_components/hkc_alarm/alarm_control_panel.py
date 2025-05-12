@@ -1,10 +1,10 @@
 from homeassistant.components.alarm_control_panel import AlarmControlPanelEntity
-from .const import DOMAIN
 from homeassistant.components.alarm_control_panel import (
     AlarmControlPanelEntity,
     AlarmControlPanelEntityFeature,
 )
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from .const import DOMAIN
 
 import logging
 
@@ -43,13 +43,13 @@ class HKCAlarmControlPanel(CoordinatorEntity, AlarmControlPanelEntity):
 
         # Extract the desired attributes from self._coordinator.panel_data
         attributes = {
-            "Green LED": self._alarm_coordinator.panel_data['greenLed'],
-            "Red LED": self._alarm_coordinator.panel_data['redLed'],
-            "Amber LED": self._alarm_coordinator.panel_data['amberLed'],
-            "Cursor On": self._alarm_coordinator.panel_data['cursorOn'],
-            "Cursor Index": self._alarm_coordinator.panel_data['cursorIndex'],
-            "Display": self._alarm_coordinator.panel_data['display'],
-            "Blink": self._alarm_coordinator.panel_data['blink'],
+            "Green LED": self._alarm_coordinator.panel_data["greenLed"],
+            "Red LED": self._alarm_coordinator.panel_data["redLed"],
+            "Amber LED": self._alarm_coordinator.panel_data["amberLed"],
+            "Cursor On": self._alarm_coordinator.panel_data["cursorOn"],
+            "Cursor Index": self._alarm_coordinator.panel_data["cursorIndex"],
+            "Display": self._alarm_coordinator.panel_data["display"],
+            "Blink": self._alarm_coordinator.panel_data["blink"],
         }
         return attributes
 
@@ -74,7 +74,10 @@ class HKCAlarmControlPanel(CoordinatorEntity, AlarmControlPanelEntity):
     @property
     def available(self) -> bool:
         """Return True if alarm is available."""
-        return self._alarm_coordinator.panel_data is not None and "display" in self._alarm_coordinator.panel_data
+        return (
+            self._alarm_coordinator.panel_data is not None
+            and "display" in self._alarm_coordinator.panel_data
+        )
 
     async def async_alarm_disarm(self, code: str | None = None) -> None:
         """Send disarm command."""
