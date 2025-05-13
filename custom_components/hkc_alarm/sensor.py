@@ -5,8 +5,6 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import DOMAIN
 from datetime import datetime, timedelta
-from homeassistant.helpers.service import async_register_admin_service
-import voluptuous as vol
 
 _logger = logging.getLogger(__name__)
 
