@@ -109,9 +109,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     }
 
     @callback
-    def update_options(updated_entry: ConfigEntry) -> None:
-        update_interval = updated_entry.options.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
-        hass.data[DOMAIN][updated_entry.entry_id]["update_interval"] = update_interval
+    async def update_options(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
+        update_interval = config_entry.options.get(CONF_UPDATE_INTERVAL, DEFAULT_UPDATE_INTERVAL)
+        hass.data[DOMAIN][config_entry.entry_id]["scan_interval"] = timedelta(seconds=update_interval)
         alarm_coordinator.update_interval = timedelta(seconds=update_interval)
         sensor_coordinator.update_interval = timedelta(seconds=update_interval)
 
