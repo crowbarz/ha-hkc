@@ -75,7 +75,9 @@ class HKCAlarmControlPanel(CoordinatorEntity, AlarmControlPanelEntity):
             and "display" in self._alarm_coordinator.panel_data
         )
 
-    async def _send_alarm_command(self, alarm_command, error_key: str) -> None:
+    async def _send_alarm_command(
+        self, alarm_command, refresh_delay: int, error_key: str
+    ) -> None:
         """Send alarm command and check response."""
         res = await self.hass.async_add_executor_job(alarm_command)
         _logger.info("%s log: %s", error_key, res)
@@ -94,24 +96,29 @@ class HKCAlarmControlPanel(CoordinatorEntity, AlarmControlPanelEntity):
             )
 
         # Refresh alarm status on successful command
-        await asyncio.sleep(2)
-        await self._alarm_coordinator.async_force_refresh()
+        if refresh_delay:
+            await asyncio.sleep(refresh_delay)
+            await self._alarm_coordinator.async_force_refresh()
 
     async def async_alarm_disarm(self, code: str | None = None) -> None:
         """Send disarm command."""
-        await self._send_alarm_command(self._hkc_alarm.disarm, "disarm_error")
+        await self._send_alarm_command(self._hkc_alarm.disarm, 3, "disarm_error")
 
     async def async_alarm_arm_home(self, code: str | None = None) -> None:
         """Send arm home command."""
-        await self._send_alarm_command(self._hkc_alarm.arm_partset_a, "partset_a_error")
+        await self._send_alarm_command(
+            self._hkc_alarm.arm_partset_a, 10, "partset_a_error"
+        )
 
     async def async_alarm_arm_night(self, code: str | None = None) -> None:
         """Send arm night command."""
-        await self._send_alarm_command(self._hkc_alarm.arm_partset_b, "partset_b_error")
+        await self._send_alarm_command(
+            self._hkc_alarm.arm_partset_b, 10, "partset_b_error"
+        )
 
     async def async_alarm_arm_away(self, code: str | None = None) -> None:
         """Send arm away command."""
-        await self._send_alarm_command(self._hkc_alarm.arm_fullset, "fullset_error")
+        await self._send_alarm_command(self._hkc_alarm.arm_fullset, 10, "fullset_error")
 
     @callback
     def _handle_coordinator_update(self) -> None:
